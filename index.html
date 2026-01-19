@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=\"UTF-8\">
+<title>TAJDIN INCIDENT</title>
+<style>
+body {
+    background:#111;
+    color:#0f0;
+    font-family: monospace;
+    padding:20px;
+}
+button {
+    background:#222;
+    color:#0f0;
+    border:1px solid #0f0;
+    padding:10px;
+    margin:5px 0;
+    width:100%;
+}
+#log {
+    background:#000;
+    padding:10px;
+    height:150px;
+    overflow:auto;
+    border:1px solid #0f0;
+}
+.warning { color:#f00; }
+</style>
+</head>
+
+<body>
+
+<h2>🧠 TAJDIN INCIDENT</h2>
+<p id=\"status\"></p>
+<div id=\"menu\"></div>
+
+<h3>📄 Incident Log</h3>
+<div id=\"log\"></div>
+
+<script>
+let iq = 100;
+let detailsViewed = 0;
+
+let leadCollege = true;
+let leadPink = false;
+let leadDustbin = false;
+let leadInternet = false;
+let leadPsych = false;
+
+const insults = [
+    \"Your brain just faceplanted.\",
+    \"IQ temporarily misplaced.\",
+    \"Tajdin gains +1 confidence.\",
+    \"Even the menu is disappointed.\",
+    \"Neurons left the chat.\"
+];
+
+function logEvent(e) {
+    const log = document.getElementById(\"log\");
+    log.innerHTML += `${e} | IQ=${iq}<br>`;
+    log.scrollTop = log.scrollHeight;
+}
+
+function insult() {
+    alert(insults[Math.floor(Math.random()*insults.length)]);
+}
+
+function checkHidden() {
+    if (iq <= 15) {
+        alert(\"HIDDEN ENDING: PITY\nTajdin helps YOU.\");
+        logEvent(\"Hidden Ending: Pity\");
+        endGame();
+    }
+    if (detailsViewed >= 3 && iq >= 130) {
+        alert(\"HIDDEN ENDING: GALAXY BRAIN\nTajdin was imaginary.\");
+        logEvent(\"Hidden Ending: Galaxy Brain\");
+        endGame();
+    }
+}
+
+function endGame() {
+    document.getElementById(\"menu\").innerHTML = \"<h3>GAME OVER</h3>\";
+}
+
+function showMenu() {
+    let html = `<p>IQ: ${iq}</p>`;
+    if (iq < 30) html += `<p class=\"warning\">⚠ Cognitive functions degraded</p>`;
+
+    if (leadCollege) html += `<button onclick=\"college()\">College Witness Reports</button>`;
+    if (leadPink) html += `<button onclick=\"pink()\">Pink Sightings</button>`;
+    if (leadDustbin) html += `<button onclick=\"dustbin()\">Dustbin Evidence</button>`;
+    if (leadInternet) html += `<button onclick=\"internet()\">Digital Footprint</button>`;
+    if (leadPsych) html += `<button onclick=\"psych()\">Psychological Profile</button>`;
+
+    html += `<button onclick=\"caseFile()\">Review Case File</button>`;
+    html += `<button onclick=\"quit()\">Withdraw</button>`;
+
+    document.getElementById(\"menu\").innerHTML = html;
+    document.getElementById(\"status\").innerText = \"SYSTEM ONLINE. Case: TAJDIN\";
+}
+
+function college() {
+    iq -= 5;
+    let c = prompt(\"1: Follow pink clothing\n2: Investigate dustbins\");
+    if (c == \"1\") {
+        iq += 5;
+        leadPink = true;
+        logEvent(\"College -> Pink unlocked\");
+    } else {
+        iq -= 10;
+        leadDustbin = true;
+        logEvent(\"College -> Dustbin unlocked\");
+    }
+    showMenu(); checkHidden();
+}
+
+function pink() {
+    iq -= 8;
+    let c = prompt(\"1: Observe silently\n2: Mock aesthetic\");
+    if (c == \"1\") {
+        iq += 10;
+        leadInternet = true;
+        logEvent(\"Pink -> Internet unlocked\");
+    } else {
+        iq -= 12;
+        logEvent(\"Pink lead failed\");
+    }
+    showMenu(); checkHidden();
+}
+
+function dustbin() {
+    iq -= 15;
+    let c = prompt(\"1: Analyze notes\n2: Destroy evidence\");
+    if (c == \"1\") {
+        iq += 7;
+        leadPsych = true;
+        logEvent(\"Dustbin -> Psychology unlocked\");
+    } else {
+        iq -= 10;
+        logEvent(\"Dustbin destroyed\");
+    }
+    showMenu(); checkHidden();
+}
+
+function psych() {
+    iq -= 10;
+    alert(\"Tajdin seeks attention.\");
+    logEvent(\"Psychological profile completed\");
+    showMenu(); checkHidden();
+}
+
+function internet() {
+    iq -= 6;
+    let c = prompt(\"1: Analyze metadata\n2: Doomscroll\");
+    if (c == \"1\") {
+        alert(\"TRUE ENDING\nTajdin livestreaming from a dustbin.\");
+        logEvent(\"TRUE ENDING\");
+        endGame();
+    } else {
+        iq -= 10;
+        logEvent(\"Internet wasted\");
+        showMenu(); checkHidden();
+    }
+}
+
+function caseFile() {
+    iq += 2;
+    detailsViewed++;
+    insult();
+    logEvent(\"Case file reviewed\");
+    showMenu(); checkHidden();
+}
+
+function quit() {
+    logEvent(\"Case abandoned\");
+    endGame();
+}
+
+showMenu();
+</script>
+
+</body>
+</html>
