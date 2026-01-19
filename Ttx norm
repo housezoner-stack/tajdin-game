@@ -1,0 +1,239 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+/* ---------- GAME STATE ---------- */
+int iq = 100;
+int detailsViewed = 0;
+
+/* Lead availability */
+int leadCollege = 1;
+int leadDustbin = 0;
+int leadPink = 0;
+int leadInternet = 0;
+int leadPsych = 0;
+
+/* ---------- LOGGING ---------- */
+void logEvent(const char *e) {
+    FILE *f = fopen("tajdin_incidents.txt", "a");
+    if (f) {
+        fprintf(f, "%s | IQ=%d\n", e, iq);
+        fclose(f);
+    }
+}
+
+/* ---------- INSULTS ---------- */
+void insult() {
+    const char *i[] = {
+        "Your brain just faceplanted.",
+        "IQ temporarily misplaced.",
+        "Tajdin gains +1 confidence.",
+        "Even the menu is disappointed.",
+        "Neurons left the chat."
+    };
+    printf("\nINSULT: %s\n\n", i[rand()%5]);
+}
+
+/* ---------- HIDDEN ENDINGS ---------- */
+void checkHidden() {
+    if (iq <= 15) {
+        printf("\n=== HIDDEN ENDING: PITY ===\n");
+        printf("Your IQ collapses completely.\n");
+        printf("Tajdin appears to help you.\n");
+        printf("You found him.\n");
+        printf("You also found rock bottom.\n");
+        logEvent("Hidden: Low IQ pity");
+        exit(0);
+    }
+    if (detailsViewed >= 3 && iq >= 130) {
+        printf("\n=== HIDDEN ENDING: GALAXY BRAIN ===\n");
+        printf("Your IQ transcends reality.\n");
+        printf("You realize Tajdin is a social experiment.\n");
+        logEvent("Hidden: Overintelligence");
+        exit(0);
+    }
+}
+
+/* ---------- CHAINS ---------- */
+void collegeChain() {
+    int c;
+    iq -= 5;
+    printf("\nCOLLEGE LEAD:\n");
+    printf("Witnesses confirm pink sightings.\n");
+    printf("Security mentions dustbin incidents.\n\n");
+
+    printf("1. Follow pink clothing reports\n");
+    printf("2. Investigate sanitation complaints\n");
+    printf("Choice: ");
+    scanf("%d",&c);
+
+    if (c == 1) {
+        iq += 5;
+        leadPink = 1;
+        printf("\n>>> NEW LEAD UNLOCKED: PINK SIGHTINGS <<<\n");
+        logEvent("College -> Pink unlocked");
+    } else {
+        iq -= 10;
+        leadDustbin = 1;
+        printf("\n>>> NEW LEAD UNLOCKED: DUSTBIN EVIDENCE <<<\n");
+        logEvent("College -> Dustbin unlocked");
+    }
+}
+
+void pinkChain() {
+    int c;
+    iq -= 8;
+    printf("\nPINK LEAD:\n");
+    printf("Group mentions online validation.\n\n");
+
+    printf("1. Blend in and observe\n");
+    printf("2. Mock their aesthetic\n");
+    printf("Choice: ");
+    scanf("%d",&c);
+
+    if (c == 1) {
+        iq += 10;
+        leadInternet = 1;
+        printf("\n>>> NEW LEAD UNLOCKED: DIGITAL FOOTPRINT <<<\n");
+        logEvent("Pink -> Internet unlocked");
+    } else {
+        iq -= 12;
+        printf("\nThey chase you away.\n");
+        logEvent("Pink lead failed");
+    }
+}
+
+void dustbinChain() {
+    int c;
+    iq -= 15;
+    printf("\nDUSTBIN LEAD:\n");
+    printf("Notes about existential dread found.\n\n");
+
+    printf("1. Analyze notes carefully\n");
+    printf("2. Burn them immediately\n");
+    printf("Choice: ");
+    scanf("%d",&c);
+
+    if (c == 1) {
+        iq += 7;
+        leadPsych = 1;
+        printf("\n>>> NEW LEAD UNLOCKED: PSYCHOLOGICAL PROFILE <<<\n");
+        logEvent("Dustbin -> Psychology unlocked");
+    } else {
+        iq -= 10;
+        printf("\nEvidence destroyed.\n");
+        logEvent("Dustbin lead destroyed");
+    }
+}
+
+void psychChain() {
+    iq -= 10;
+    printf("\nPSYCHOLOGICAL LEAD:\n");
+    printf("Tajdin likely seeks attention.\n");
+    printf("Conclusion sent to archives.\n");
+    logEvent("Psych lead exhausted");
+}
+
+void internetChain() {
+    int c;
+    iq -= 6;
+    printf("\nDIGITAL LEAD:\n");
+    printf("Livestream scheduled.\n\n");
+
+    printf("1. Analyze metadata deeply\n");
+    printf("2. Scroll mindlessly\n");
+    printf("Choice: ");
+    scanf("%d",&c);
+
+    if (c == 1) {
+        printf("\n=== TRUE ENDING: TAJDIN FOUND ===\n");
+        printf("Tajdin live-streaming from a dustbin.\n");
+        printf("Case closed.\n");
+        logEvent("TRUE ENDING");
+        exit(0);
+    } else {
+        iq -= 10;
+        printf("\nBrain rot achieved.\n");
+        logEvent("Internet lead wasted");
+    }
+}
+
+/* ---------- CASE FILE ---------- */
+void caseFile() {
+    iq += 2;
+    detailsViewed++;
+    printf("\nCase File Reviewed.\n");
+    insult();
+    logEvent("Case file read");
+}
+
+/* ---------- MENU ---------- */
+void showMenu() {
+    printf("\n===== ACTIVE LEADS =====\n");
+    printf("IQ: %d\n\n", iq);
+
+    if (iq < 30)
+        printf("WARNING: Cognitive functions degraded\n");
+
+    if (leadCollege) printf("[1] College Witness Reports\n");
+    if (leadPink)
+        if (iq >= 40) printf("[2] Pink Sightings\n");
+        else printf("[2] Pink Sightings (LOCKED — IQ 40 required)\n");
+    if (leadDustbin)
+        if (iq >= 35) printf("[3] Dustbin Evidence\n");
+        else printf("[3] Dustbin Evidence (LOCKED — IQ 35 required)\n");
+    if (leadInternet)
+        if (iq >= 60) printf("[4] Digital Footprint (COMPLEX)\n");
+        else printf("[4] Digital Footprint (LOCKED — IQ 60 required)\n");
+    if (leadPsych)
+        if (iq >= 70) printf("[5] Psychological Profile\n");
+        else printf("[5] Psychological Profile (LOCKED — IQ 70 required)\n");
+
+    printf("\n[6] Review Case File\n");
+    printf("[0] Withdraw from Case\n");
+    printf("\nChoice: ");
+}
+
+/* ---------- MAIN ---------- */
+int main() {
+    int c;
+    srand(time(NULL));
+
+    FILE *f = fopen("tajdin_incidents.txt","w");
+    if (f) {
+        fprintf(f,"=== TAJDIN INCIDENT LOG ===\n");
+        fclose(f);
+    }
+
+    printf("SYSTEM ONLINE.\n");
+    printf("Case: TAJDIN\n");
+    printf("Initial intelligence incomplete.\n");
+
+    while (1) {
+        showMenu();
+        if (scanf("%d",&c)!=1) break;
+
+        switch(c) {
+            case 1: if (leadCollege) collegeChain(); break;
+            case 2: if (leadPink && iq>=40) pinkChain(); break;
+            case 3: if (leadDustbin && iq>=35) dustbinChain(); break;
+            case 4: if (leadInternet && iq>=60) internetChain(); break;
+            case 5: if (leadPsych && iq>=70) psychChain(); break;
+            case 6: caseFile(); break;
+            case 0:
+                printf("\nYou abandon the case.\n");
+                logEvent("Case abandoned by player");
+                exit(0);
+                break;
+            default:
+                printf("Invalid choice.\n");
+                break;
+        }
+
+        checkHidden();
+    }
+
+    printf("\nInput error. Exiting.\n");
+    logEvent("Program exited due to input error");
+    return 0;
+}
